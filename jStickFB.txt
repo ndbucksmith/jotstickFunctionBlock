@@ -1,0 +1,51 @@
+FUNCTION_BLOCK JStick
+VAR_INPUT
+	upper: BOOL;
+END_VAR
+VAR_OUTPUT
+	jStickVal : REAL;
+END_VAR
+VAR
+	adc : REAL;
+	switch : INT;
+	val : REAL;
+END_VAR
+VAR CONSTANT
+	maxFwd : REAL := 15750;
+	minRev : REAL := 1470;
+	midPt : REAL := 8220;
+	deadBand : REAL := 1400;
+	fwdStart : REAL := 8920;
+	revStart : REAL := 7520;
+	fwdRange : REAL :=  6830;
+	revRange : REAL :=  6050;
+	
+END_VAR
+
+
+// channel assignment
+IF upper THEN
+	adc := INT_TO_REAL(upperJS);
+	switch :=  upperJStrigger;
+ELSE
+	adc := INT_TO_REAL(lowerJS);
+	switch :=  lowerJStrigger;	
+END_IF;
+
+//joystick transfer function
+IF switch > midPt THEN  //trigger close
+ IF adc > fwdStart THEN
+	val := (adc - fwdStart)  / fwdRange;  	// postive velcoity setting
+ ELSIF adc < revStart THEN
+	val := (adc - revStart) / revRange;  	// negative velcoity setting
+ ELSE 
+     val := 0;   // in the deadband
+ END_IF
+ELSE
+	 val := 0;   //trigger open
+END_IF
+
+
+
+
+jStickVal := val;

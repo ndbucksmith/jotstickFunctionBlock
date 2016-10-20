@@ -1,0 +1,1 @@
+Structured text code to process joystick and trigger signals and return a value in range of -1 to 1.
